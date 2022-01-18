@@ -11,7 +11,7 @@ fn main() {
 	println!("Assigning a value within the matrix:");
 	test.print();
 	
-	let foo = Matrix([[2, 4, 5],
+	let mut foo = Matrix([[2, 4, 5],
 					  [6, 7, 8]]);
 	println!("Instantiating a pre-made matrix:");
 	foo.print();
@@ -27,4 +27,12 @@ fn main() {
 	let bar = -foo;
 	println!("Negating a matrix:");
 	bar.print();
+
+	foo *= 2;
+	println!("Multiplying a matrix by a scalar:");
+	foo.print();
+
+	foo /= 2;
+	println!("Dividing a matrix by a scalar:");
+	foo.print();
 }

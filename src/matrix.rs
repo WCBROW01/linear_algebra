@@ -1,4 +1,4 @@
-use std::ops::{Index, IndexMut, Add, AddAssign, Sub, SubAssign, Neg};
+use std::ops::{Index, IndexMut, Add, AddAssign, Sub, SubAssign, Neg, Mul, MulAssign, Div, DivAssign};
 use std::fmt::Display;
 
 #[derive(Copy, Clone)]
@@ -116,3 +116,54 @@ impl<T: Default + Copy + Neg<Output = T>, const M: usize, const N: usize> Neg fo
 		new_matrix
 	}
 }
+
+impl<T: Default + Copy + Mul<Output = T>, const M: usize, const N: usize> Mul<T> for Matrix<T, M, N> {
+	type Output = Self;
+
+	fn mul(self, other: T) -> Self::Output {
+		let mut new_matrix = self;
+		for i in 0..M {
+			for j in 0..N {
+				new_matrix[i][j] = self[i][j] * other;
+			}
+		}
+
+		new_matrix
+	}
+}
+
+impl<T: Default + Copy + MulAssign, const M: usize, const N: usize> MulAssign<T> for Matrix<T, M, N> {
+	fn mul_assign(&mut self, other: T) {
+		for i in 0..M {
+			for j in 0..N {
+				self[i][j] *= other;
+			}
+		}
+	}
+}
+
+impl<T: Default + Copy + Div<Output = T>, const M: usize, const N: usize> Div<T> for Matrix<T, M, N> {
+	type Output = Self;
+
+	fn div(self, other: T) -> Self::Output {
+		let mut new_matrix = self;
+		for i in 0..M {
+			for j in 0..N {
+				new_matrix[i][j] = self[i][j] / other;
+			}
+		}
+
+		new_matrix
+	}
+}
+
+impl<T: Default + Copy + DivAssign, const M: usize, const N: usize> DivAssign<T> for Matrix<T, M, N> {
+	fn div_assign(&mut self, other: T) {
+		for i in 0..M {
+			for j in 0..N {
+				self[i][j] /= other;
+			}
+		}
+	}
+}
+
