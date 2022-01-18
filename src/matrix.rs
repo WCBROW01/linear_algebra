@@ -32,13 +32,12 @@ impl<T: Default + Copy + MulAssign, const M: usize, const N: usize> Matrix<T, M,
 	}
 }
 
-impl<T: Default + Copy + AddAssign + Mul<Output = T>, const M: usize, const N: usize> Matrix<T, M, N> {	
+impl<T: Default + Copy + Add<Output = T> + Mul<Output = T>, const M: usize, const N: usize> Matrix<T, M, N> {	
 	pub fn add_row_to_other(&mut self, row: usize, other: usize, scalar: T) {
-		let mut temp = self.clone();
 		for i in 0..N {
-			temp[other][i] += self[row][i] * scalar;
+			// Using += requires me to create a temporary variable.
+			self[other][i] = self[other][i] + self[row][i] * scalar;
 		}
-		*self = temp;
 	}
 }
 
