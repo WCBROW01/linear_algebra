@@ -16,6 +16,30 @@ impl<T: Default + Copy, const M: usize, const N: usize> Matrix<T, M, N> {
 	pub fn new() -> Self {
 		Matrix([[Default::default(); N]; M])
 	}
+
+	pub fn swap_rows(&mut self, a: usize, b: usize) {
+		let temp = self[a];
+		self[a] = self[b];
+		self[b] = temp;
+	}
+}
+
+impl<T: Default + Copy + MulAssign, const M: usize, const N: usize> Matrix<T, M, N> {	
+	pub fn mul_row_by_scalar(&mut self, row: usize, scalar: T) {
+		for i in 0..N {
+			self[row][i] *= scalar;
+		}
+	}
+}
+
+impl<T: Default + Copy + AddAssign + Mul<Output = T>, const M: usize, const N: usize> Matrix<T, M, N> {	
+	pub fn add_row_to_other(&mut self, row: usize, other: usize, scalar: T) {
+		let mut temp = self.clone();
+		for i in 0..N {
+			temp[other][i] += self[row][i] * scalar;
+		}
+		*self = temp;
+	}
 }
 
 impl<T: Default + Copy + Display, const M: usize, const N: usize> Matrix<T, M, N> {
@@ -166,4 +190,3 @@ impl<T: Default + Copy + DivAssign, const M: usize, const N: usize> DivAssign<T>
 		}
 	}
 }
-
