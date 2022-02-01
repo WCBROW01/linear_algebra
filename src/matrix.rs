@@ -24,7 +24,7 @@ impl<T: Default + Copy, const M: usize, const N: usize> Matrix<T, M, N> {
 	}
 }
 
-impl<T: Default + Copy + MulAssign, const M: usize, const N: usize> Matrix<T, M, N> {	
+impl<T: Default + Copy + MulAssign, const M: usize, const N: usize> Matrix<T, M, N> {
 	pub fn mul_row_by_scalar(&mut self, row: usize, scalar: T) {
 		for i in 0..N {
 			self[row][i] *= scalar;
@@ -32,11 +32,16 @@ impl<T: Default + Copy + MulAssign, const M: usize, const N: usize> Matrix<T, M,
 	}
 }
 
-impl<T: Default + Copy + Add<Output = T> + Mul<Output = T>, const M: usize, const N: usize> Matrix<T, M, N> {	
+impl<T: Default + Copy + AddAssign + Mul<Output = T>, const M: usize, const N: usize> Matrix<T, M, N> {
 	pub fn add_row_to_other(&mut self, row: usize, other: usize, scalar: T) {
+		/* The borrow checker will notice that &self is being borrowed twice and
+		 * complain even though this operation is safe, so a pointer is created
+		 * and the unsafe hatch is used to avoid making a copy of the matrix. */
+		let selfptr = self as *mut Self;
 		for i in 0..N {
-			// Using += requires me to create a temporary variable.
-			self[other][i] = self[other][i] + self[row][i] * scalar;
+			unsafe {
+				(*selfptr)[other][i] += (*selfptr)[row][i] * scalar;
+			}
 		}
 	}
 }
@@ -88,7 +93,7 @@ impl<T: Default + Copy + Add<Output = T>, const M: usize, const N: usize> Add fo
 	}
 }
 
- 
+
 impl<T: Default + Copy + AddAssign, const M: usize, const N: usize> AddAssign for Matrix<T, M, N> {
 	fn add_assign(&mut self, other: Self) {
 		for i in 0..M {
@@ -114,7 +119,7 @@ impl<T: Default + Copy + Sub<Output = T>, const M: usize, const N: usize> Sub fo
 	}
 }
 
- 
+
 impl<T: Default + Copy + SubAssign, const M: usize, const N: usize> SubAssign for Matrix<T, M, N> {
 	fn sub_assign(&mut self, other: Self) {
 		for i in 0..M {
