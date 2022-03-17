@@ -160,6 +160,23 @@ impl<T: Default + Copy + Mul<Output = T>, const M: usize, const N: usize> Mul<T>
 	}
 }
 
+impl<T: Default + Copy + Mul<Output = T> + AddAssign, const M: usize, const N: usize, const P: usize> Mul<Matrix<T, N, P>> for Matrix<T, M, N> {
+	type Output = Matrix<T, M, P>;
+
+	fn mul(self, other: Matrix<T, N, P>) -> Self::Output {
+		let mut new_matrix = Matrix::new();
+		for i in 0..M {
+			for j in 0..N {
+				for k in 0..P {
+					new_matrix[i][k] += self[i][j] * other[j][k];
+				}
+			}
+		}
+
+		new_matrix
+	}
+}
+
 impl<T: Default + Copy + MulAssign, const M: usize, const N: usize> MulAssign<T> for Matrix<T, M, N> {
 	fn mul_assign(&mut self, other: T) {
 		for i in 0..M {
@@ -170,27 +187,19 @@ impl<T: Default + Copy + MulAssign, const M: usize, const N: usize> MulAssign<T>
 	}
 }
 
-impl<T: Default + Copy + Div<Output = T>, const M: usize, const N: usize> Div<T> for Matrix<T, M, N> {
-	type Output = Self;
+impl<T: Default + Copy + MulAssign + AddAssign, const M: usize> MulAssign for Matrix<T, M, M> {
+	type Output = Matrix<T, M, P>;
 
-	fn div(self, other: T) -> Self::Output {
-		let mut new_matrix = self;
+	fn mul(self, other: Matrix<T, N, P>) -> Self::Output {
+		let mut new_matrix = Matrix::new();
 		for i in 0..M {
 			for j in 0..N {
-				new_matrix[i][j] = self[i][j] / other;
+				for k in 0..P {
+					new_matrix[i][k] += self[i][j] * other[j][k];
+				}
 			}
 		}
 
 		new_matrix
-	}
-}
-
-impl<T: Default + Copy + DivAssign, const M: usize, const N: usize> DivAssign<T> for Matrix<T, M, N> {
-	fn div_assign(&mut self, other: T) {
-		for i in 0..M {
-			for j in 0..N {
-				self[i][j] /= other;
-			}
-		}
 	}
 }
