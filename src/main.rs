@@ -33,10 +33,6 @@ fn main() {
 	println!("Multiplying a matrix by a scalar:");
 	foo.print();
 
-	foo /= 2;
-	println!("Dividing a matrix by a scalar:");
-	foo.print();
-
 	println!("\nElementary row operations:");
 	foo.swap_rows(0, 1);
 	println!("Swapping row 0 and 1 of a matrix:");
@@ -60,4 +56,15 @@ fn main() {
 	let quux = baz * qux;
 	println!("Multiplying a matrix by another matrix:");
 	quux.print();
+
+	let rr: Matrix<f64, 3, 3> = Matrix([
+		[1.0, 3.0, 6.0],
+		[2.0, -9.0, 4.0],
+		[11.0, 13.0, 28.0]
+	]);
+	println!("Creating a new matrix for row reduction:");
+	rr.print();
+	let rr2 = rr.row_reduce();
+	println!("Row-reducing the matrix:");
+	rr2.print();
 }
